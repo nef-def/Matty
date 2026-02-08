@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matty | Mateo world</title>
+    <title>Matty | MATTY'S FANS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.3/cdn.min.js" defer></script>
@@ -86,7 +86,8 @@
         @media (min-width: 1024px) {
             body { cursor: none; }
             body.game-open { cursor: auto !important; }
-            #cursor { width: 10px; height: 10px; background: #fff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 10000; mix-blend-mode: difference; }
+            #cursor { width: 100px; height: 100px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50%; position: fixed; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; }
+            #cursor::after { content: ''; width: 4px; height: 4px; background: #fff; border-radius: 50%; }
         }
 
         #flashlight { 
@@ -177,7 +178,7 @@
 
         /* --- 3D GALLERY STYLES --- */
         .gallery-wrapper {
-            height: 400vh; /* طول التمرير للقسم */
+            height: 400vh;
             position: relative;
         }
         .stage-3d {
@@ -193,7 +194,7 @@
         .gallery-path {
             display: flex;
             gap: 150px;
-            padding-right: 50vw; /* تم التعديل لضمان البدء من المنتصف */
+            padding-right: 5vw;
             transform-style: preserve-3d;
             transform: rotateY(-28deg) rotateX(6deg);
             will-change: transform;
@@ -209,8 +210,8 @@
             transform-style: preserve-3d;
             transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
-        @media (min-width: 300px) {
-            .art-card { width: 300px; height: 450px; border: 5px solid #1a1a1a; }
+        @media (max-width: 768px) {
+            .art-card { width: 260px; height: 380px; border: 8px solid #1a1a1a; }
         }
         .art-card img {
             width: 100%; height: 100%;
@@ -276,10 +277,14 @@
                 
                 <div x-show="currentGame === null" class="text-center py-4">
                     <h2 class="text-3xl font-black glow-text mb-8 uppercase italic tracking-tighter">Mini Games</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-2 sm:grid-cols-2 gap-4">
                         <button @click="startSnake()" class="p-6 border border-white/10 rounded-3xl bg-white/5 hover:border-purple-500 transition-all"><i class="fas fa-worm text-purple-400 text-3xl mb-4"></i><p class="text-[10px] font-black tracking-[0.3em] uppercase">Snake</p></button>
                         <button @click="startMemory()" class="p-6 border border-white/10 rounded-3xl bg-white/5 hover:border-cyan-400 transition-all"><i class="fas fa-brain text-cyan-400 text-3xl mb-4"></i><p class="text-[10px] font-black tracking-[0.3em] uppercase">Memory</p></button>
                         <button @click="startEscape()" class="p-6 border border-white/10 rounded-3xl bg-white/5 hover:border-pink-500 transition-all"><i class="fas fa-bolt text-pink-400 text-3xl mb-4"></i><p class="text-[10px] font-black tracking-[0.3em] uppercase">Escape</p></button>
+                        <a href="https://nef-def.github.io/Mafia-game/" target="_blank" class="p-6 border border-white/10 rounded-3xl bg-white/5 hover:border-red-600 transition-all block group">
+                            <i class="fas fa-user-secret text-red-600 text-3xl mb-4 group-hover:scale-110 transition-transform"></i>
+                            <p class="text-[10px] font-black tracking-[0.3em] uppercase">Mafia</p>
+                        </a>
                     </div>
                 </div>
 
@@ -592,23 +597,14 @@
                     window.addEventListener('scroll', () => {
                         const rect = wrapper.getBoundingClientRect();
                         if (rect.top <= window.innerHeight && rect.bottom >= 0) {
-                            // تم تحسين حساب التقدم (Progress) ليكون بين 0 و 1 تماماً
-                            let progress = -rect.top / (rect.height - window.innerHeight);
-                            progress = Math.max(0, Math.min(progress, 1));
-                            
-                            // تم ضبط المسافة الكلية (Total Move) لتتوقف عند آخر صورة في المنتصف
-                            // العرض الافتراضي للكارد هو 300 والـ gap هو 150
-                            const itemFullWidth = 300 + 150; 
-                            const totalMove = (galleryData.length - 1) * itemFullWidth;
-                            
-                            const xMove = progress * totalMove;
+                            const progress = -rect.top / (rect.height - window.innerHeight);
+                            const xMove = Math.max(0, progress) * (galleryData.length * 450);
                             track.style.transform = `rotateY(-28deg) rotateX(6deg) translateX(${-xMove}px)`;
 
                             cards.forEach(card => {
                                 const cRect = card.getBoundingClientRect();
                                 const center = window.innerWidth / 2;
-                                // تم توسيع مجال التفعيل (Detection Range) لضمان ظهور الوصف للصور الجانبية
-                                if (cRect.left < center + 200 && cRect.right > center - 200) {
+                                if (cRect.left < center + 100 && cRect.right > center - 100) {
                                     card.classList.add('active');
                                 } else {
                                     card.classList.remove('active');
@@ -622,4 +618,3 @@
     </script>
 </body>
 </html>
-
